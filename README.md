@@ -6,7 +6,11 @@ As the JTM Network portfolio of products grows, to remove duplication in profile
 
 # Technologies Used
 - [Spring Boot](https://spring.io/projects/spring-boot)
+- [Spring Webflux](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)
 - [Kotlin](https://kotlinlang.org)
+- [MongoDB](https://www.mongodb.com)
+- [Docker](https://www.docker.com)
+- [Kubernetes](https://kubernetes.io)
 
 # Features
 - Stripe hook support.
