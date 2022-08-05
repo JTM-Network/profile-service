@@ -13,6 +13,7 @@ As the JTM Network portfolio of products grows, to remove duplication in profile
 - [Kubernetes](https://kubernetes.io)
 
 # Features
+- Profile Management.
 - Stripe hook support.
 - Paypal hook support.
 - Profile fetching based on authorization platform:
