@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ "!main", '**' ]
+
+jobs:
+  build:
+    name: Gradle build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: JDK 16 Set up
+        uses: actions/setup-java@v3.4.1
+        with:
+          java-version: 16
+
+      - name: Grant execute permissions for gradlew
+        run: |-
+          chmod +x gradlew
+    
+      - name: Cache gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+    
+      - name: Gradle build
+        run: |-
+          ./gradlew build
+        
+      - name: Cleanup Gradle cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
