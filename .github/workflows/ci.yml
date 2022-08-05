@@ -16,7 +16,7 @@ jobs:
       - name: JDK 16 Set up
         uses: actions/setup-java@v3.4.1
         with:
-          distribution: jdk
+          distribution: temurin
           java-version: 16
 
       - name: Grant execute permissions for gradlew
