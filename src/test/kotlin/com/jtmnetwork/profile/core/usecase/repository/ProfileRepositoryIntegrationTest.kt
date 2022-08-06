@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
@@ -23,6 +24,11 @@ class ProfileRepositoryIntegrationTest {
 
     private val id = UUID.randomUUID()
     private val created = TestUtil.createProfile(id.toString())
+
+    @BeforeEach
+    fun setup() {
+        profileRepository.deleteAll().block()
+    }
 
     @Test
     fun save_shouldReturnProfile() {
@@ -57,6 +63,8 @@ class ProfileRepositoryIntegrationTest {
 
     @Test
     fun findAll_shouldReturnProfiles() {
+        profileRepository.deleteAll().block()
+
         val secondId = UUID.randomUUID()
 
         profileRepository.save(created).block()
@@ -72,6 +80,8 @@ class ProfileRepositoryIntegrationTest {
 
     @Test
     fun findAll_shouldReturnEmpty() {
+        profileRepository.deleteAll().block()
+
         val returned = profileRepository.findAll()
 
         StepVerifier.create(returned)
