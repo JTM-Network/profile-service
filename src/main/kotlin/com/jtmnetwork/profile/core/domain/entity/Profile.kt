@@ -13,4 +13,18 @@ data class Profile(@Id val id: String, val subs: MutableMap<String, Subscription
                    val joined: Long = System.currentTimeMillis()) {
 
     constructor(id: String): this(id = id, status = AccountStatus.ONLINE)
+
+    fun isBanned(): Boolean {
+        return status == AccountStatus.BANNED
+    }
+
+    fun ban(): Profile {
+        this.status = AccountStatus.BANNED
+        this.updated()
+        return this
+    }
+
+    fun updated() {
+        this.updated = System.currentTimeMillis()
+    }
 }

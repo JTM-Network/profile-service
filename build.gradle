@@ -33,6 +33,11 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
 
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3'
+
     implementation "io.sentry:sentry-spring-boot-starter:6.3.0"
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation 'com.stripe:stripe-java:20.136.0'

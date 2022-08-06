@@ -1,6 +1,7 @@
 package com.jtmnetwork.profile.core.usecase.repository
 
 import com.jtmnetwork.profile.core.domain.entity.Profile
+import com.jtmnetwork.profile.core.util.TestUtil
 import junit.framework.TestCase.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -21,7 +22,7 @@ class ProfileRepositoryIntegrationTest {
     lateinit var profileRepository: ProfileRepository
 
     private val id = UUID.randomUUID()
-    private val created = Profile(id.toString())
+    private val created = TestUtil.createProfile(id.toString())
 
     @Test
     fun save_shouldReturnProfile() {
@@ -46,6 +47,15 @@ class ProfileRepositoryIntegrationTest {
     }
 
     @Test
+    fun findById_shouldReturnEmpty() {
+        val returned = profileRepository.findById(id.toString())
+
+        StepVerifier.create(returned)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
     fun findAll_shouldReturnProfiles() {
         val secondId = UUID.randomUUID()
 
@@ -61,19 +71,28 @@ class ProfileRepositoryIntegrationTest {
     }
 
     @Test
-    fun deleteById_shouldReturnProfile() {
+    fun findAll_shouldReturnEmpty() {
+        val returned = profileRepository.findAll()
+
+        StepVerifier.create(returned)
+            .expectNextCount(0)
+            .verifyComplete()
+    }
+
+    @Test
+    fun deleteById_shouldDeleteProfile() {
         profileRepository.save(created).block()
 
         val exists = profileRepository.existsById(id.toString()).block()
 
         assertNotNull(exists)
-        assertTrue(exists)
+        if (exists != null) assertTrue(exists)
 
         profileRepository.deleteById(id.toString()).block()
 
         val returned = profileRepository.existsById(id.toString()).block()
 
         assertNotNull(returned)
-        assertFalse(returned)
+        if (returned != null) assertFalse(returned)
     }
 }
