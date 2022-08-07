@@ -24,7 +24,13 @@ data class Profile(@Id val id: String, val subs: MutableMap<String, Subscription
         return this
     }
 
-    fun updated() {
+    fun unban(): Profile {
+        this.status = AccountStatus.OFFLINE
+        this.updated()
+        return this
+    }
+
+    private fun updated() {
         this.updated = System.currentTimeMillis()
     }
 }

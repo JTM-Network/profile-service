@@ -39,5 +39,10 @@ class TestUtil {
             assertThat(returned.id).isEqualTo(id)
             assertThat(returned.status).isEqualTo(AccountStatus.BANNED)
         }
+
+        fun assertUnbannedProfile(returned: Profile, id: String) {
+            assertThat(returned.id).isEqualTo(id)
+            assertThat(returned.status).isEqualTo(AccountStatus.OFFLINE)
+        }
     }
 }

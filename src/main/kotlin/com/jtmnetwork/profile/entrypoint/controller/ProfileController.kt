@@ -26,4 +26,9 @@ class ProfileController @Autowired constructor(private val profileService: Profi
     fun banProfile(@PathVariable id: String): Mono<Profile> {
         return profileService.banProfile(id)
     }
+
+    @GetMapping("/unban/{id}")
+    fun unbanProfile(@PathVariable id: String): Mono<Profile> {
+        return profileService.unbanProfile(id)
+    }
 }
