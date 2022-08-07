@@ -14,6 +14,8 @@ As the JTM Network portfolio of products grows, to remove duplication in profile
 
 # Features
 - Profile Management.
+- Subscription Management.
+- Permission based access control.
 - Stripe hook support.
 - Paypal hook support.
 - Profile fetching based on authorization platform:
