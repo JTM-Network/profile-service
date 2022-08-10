@@ -133,7 +133,7 @@ class SubscriptionControllerUnitTest {
         `when`(subscriptionService.removeSubscription(anyString(), anyString())).thenReturn(Mono.error(ProfileNotFound()))
 
         testClient.delete()
-            .uri("/sub?id=$id&name=test")
+            .uri("/sub?id=test|23&name=test")
             .exchange()
             .expectStatus().isNotFound
             .expectBody()
@@ -148,7 +148,7 @@ class SubscriptionControllerUnitTest {
         `when`(subscriptionService.removeSubscription(anyString(), anyString())).thenReturn(Mono.error(SubscriptionNotFound()))
 
         testClient.delete()
-            .uri("/sub?id=$id&name=test")
+            .uri("/sub?id=test|23&name=test")
             .exchange()
             .expectStatus().isNotFound
             .expectBody()
@@ -163,7 +163,7 @@ class SubscriptionControllerUnitTest {
         `when`(subscriptionService.removeSubscription(anyString(), anyString())).thenReturn(Mono.just(created))
 
         testClient.delete()
-            .uri("/sub?id=$id&name=test")
+            .uri("/sub?id=test|23&name=test")
             .exchange()
             .expectStatus().isOk
             .expectBody()
