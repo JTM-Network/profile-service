@@ -1,7 +1,9 @@
 package com.jtmnetwork.profile.data.service
 
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
+import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
 import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.ProfileUnbanned
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
 import com.jtmnetwork.profile.core.util.TestUtil
 import org.junit.Test
@@ -127,7 +129,21 @@ class ProfileServiceUnitTest {
     }
 
     @Test
-    fun banProfile_shouldBanProfile_whenFound() {
+    fun banProfile_shouldThrowBanned_whenFound() {
+        `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created.ban()))
+
+        val returned = profileService.banProfile("id")
+
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(ProfileBanned::class.java)
+            .verify()
+    }
+
+    @Test
+    fun banProfile_shouldBanProfile_whenSaved() {
         `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created))
         `when`(profileRepository.save(anyOrNull())).thenReturn(Mono.just(created))
 
@@ -138,6 +154,49 @@ class ProfileServiceUnitTest {
 
         StepVerifier.create(returned)
             .assertNext { TestUtil.assertBannedProfile(it, id) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun unbanProfile_shouldThrowNotFound_whenNotFound() {
+        `when`(profileRepository.findById(anyString())).thenReturn(Mono.empty())
+
+        val returned = profileService.unbanProfile("id")
+
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(ProfileNotFound::class.java)
+            .verify()
+    }
+
+    @Test
+    fun unbanProfile_shouldThrowUnbanned_whenFound() {
+        `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created.unban()))
+
+        val returned = profileService.unbanProfile("id")
+
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(ProfileUnbanned::class.java)
+            .verify()
+    }
+
+    @Test
+    fun unbanProfile_shouldUnbanProfile_whenSaved() {
+        `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created.ban()))
+        `when`(profileRepository.save(anyOrNull())).thenReturn(Mono.just(created))
+
+        val returned = profileService.unbanProfile("id")
+
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .assertNext { TestUtil.assertUnbannedProfile(it, id) }
             .verifyComplete()
     }
 }

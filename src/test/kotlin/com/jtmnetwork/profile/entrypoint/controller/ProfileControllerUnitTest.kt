@@ -2,7 +2,9 @@ package com.jtmnetwork.profile.entrypoint.controller
 
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
+import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
 import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.ProfileUnbanned
 import com.jtmnetwork.profile.core.util.TestUtil
 import com.jtmnetwork.profile.data.service.ProfileService
 import org.junit.Test
@@ -42,6 +44,8 @@ class ProfileControllerUnitTest {
             .uri("/me")
             .exchange()
             .expectStatus().isBadRequest
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("CLIENT_ID header missing.")
 
         verify(profileService, times(1)).getProfile(anyOrNull())
         verifyNoMoreInteractions(profileService)
@@ -68,9 +72,11 @@ class ProfileControllerUnitTest {
         `when`(profileService.getProfileById(anyString())).thenReturn(Mono.error(ProfileNotFound()))
 
         testClient.get()
-            .uri("/${UUID.randomUUID().toString()}")
+            .uri("/${UUID.randomUUID()}")
             .exchange()
             .expectStatus().isNotFound
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Profile not found.")
 
         verify(profileService, times(1)).getProfileById(anyString())
         verifyNoMoreInteractions(profileService)
@@ -81,7 +87,7 @@ class ProfileControllerUnitTest {
         `when`(profileService.getProfileById(anyString())).thenReturn(Mono.just(created))
 
         testClient.get()
-            .uri("/${UUID.randomUUID().toString()}")
+            .uri("/${UUID.randomUUID()}")
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -97,9 +103,26 @@ class ProfileControllerUnitTest {
         `when`(profileService.banProfile(anyString())).thenReturn(Mono.error(ProfileNotFound()))
 
         testClient.get()
-            .uri("/ban/${UUID.randomUUID().toString()}")
+            .uri("/ban/${UUID.randomUUID()}")
             .exchange()
             .expectStatus().isNotFound
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Profile not found.")
+
+        verify(profileService, times(1)).banProfile(anyString())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun banProfile_shouldThrowBanned() {
+        `when`(profileService.banProfile(anyString())).thenReturn(Mono.error(ProfileBanned()))
+
+        testClient.get()
+            .uri("/ban/${UUID.randomUUID()}")
+            .exchange()
+            .expectStatus().isFound
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Profile is already banned.")
 
         verify(profileService, times(1)).banProfile(anyString())
         verifyNoMoreInteractions(profileService)
@@ -110,7 +133,7 @@ class ProfileControllerUnitTest {
         `when`(profileService.banProfile(anyString())).thenReturn(Mono.just(created))
 
         testClient.get()
-            .uri("/ban/${UUID.randomUUID().toString()}")
+            .uri("/ban/${UUID.randomUUID()}")
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -118,6 +141,52 @@ class ProfileControllerUnitTest {
             .jsonPath("$.status").isEqualTo(AccountStatus.ONLINE.toString())
 
         verify(profileService, times(1)).banProfile(anyString())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun unbanProfile_shouldThrowNotFound() {
+        `when`(profileService.unbanProfile(anyString())).thenReturn(Mono.error(ProfileNotFound()))
+
+        testClient.get()
+            .uri("/unban/${UUID.randomUUID()}")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Profile not found.")
+
+        verify(profileService, times(1)).unbanProfile(anyString())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun unbanProfile_shouldThrowUnbanned() {
+        `when`(profileService.unbanProfile(anyString())).thenReturn(Mono.error(ProfileUnbanned()))
+
+        testClient.get()
+            .uri("/unban/${UUID.randomUUID()}")
+            .exchange()
+            .expectStatus().isFound
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Profile is already unbanned.")
+
+        verify(profileService, times(1)).unbanProfile(anyString())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun unbanProfile_shouldReturnUnbannedProfile() {
+        `when`(profileService.unbanProfile(anyString())).thenReturn(Mono.just(created.unban()))
+
+        testClient.get()
+            .uri("/unban/${UUID.randomUUID()}")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isEqualTo(id)
+            .jsonPath("$.status").isEqualTo(AccountStatus.OFFLINE.toString())
+
+        verify(profileService, times(1)).unbanProfile(anyString())
         verifyNoMoreInteractions(profileService)
     }
 }

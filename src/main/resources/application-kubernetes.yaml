@@ -5,5 +5,4 @@ spring:
       database: ${MONGO_DATABASE}
 
 stripe:
-  pb-key: ${STRIPE_PB_KEY}
   secret-key: ${STRIPE_SECRET_KEY}
