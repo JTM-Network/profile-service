@@ -1,6 +1,7 @@
 package com.jtmnetwork.profile.core.util
 
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
+import com.jtmnetwork.profile.core.domain.dto.SubDTO
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import org.assertj.core.api.Assertions.assertThat
 import org.mockito.Mockito.`when`
@@ -28,6 +29,10 @@ class TestUtil {
             `when`(request.headers).thenReturn(headers)
 
             return request
+        }
+
+        fun createSubDTO(): SubDTO {
+            return SubDTO("plugin", 1, "30d")
         }
 
         fun assertProfile(returned: Profile, id: String) {

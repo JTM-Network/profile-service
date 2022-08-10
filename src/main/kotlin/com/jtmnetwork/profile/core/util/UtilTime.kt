@@ -1,16 +1,26 @@
 package com.jtmnetwork.profile.core.util
 
+import java.util.concurrent.TimeUnit
+
 class UtilTime {
     companion object {
 
-        // TODO: Valid check age with correct suffix
         fun validAge(age: String): Boolean {
-            return false
+            val suffix = age.substring(age.length - 1)
+            return suffix.contentEquals("h") || suffix.contentEquals("d") || suffix.contentEquals("m") || suffix.contentEquals("y")
         }
 
-        // TODO: parse the age given e.g. 30d, 1h, 24h,
         fun parseAge(age: String): Long {
-            return System.currentTimeMillis()
+            if (!validAge(age)) return 0
+            val suffix = age.substring(age.length - 1)
+            val time = age.substring(0, age.length - 1).toLongOrNull() ?: return 0
+            return when(suffix) {
+                "h" -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(time)
+                "d" -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(time)
+                "m" -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(time * 30)
+                "y" -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(time * 365)
+                else -> 0
+            }
         }
     }
 }
