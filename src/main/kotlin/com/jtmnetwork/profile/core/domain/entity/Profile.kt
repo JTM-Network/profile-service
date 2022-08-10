@@ -31,6 +31,12 @@ data class Profile(@Id val id: String,
         return this
     }
 
+    fun addPermission(permissions: Array<String>): Profile {
+        permissions.forEach { this.permissions.add(it) }
+        this.updated()
+        return this
+    }
+
     fun addPermission(permission: String): Profile {
         this.permissions.add(permission)
         this.updated()
