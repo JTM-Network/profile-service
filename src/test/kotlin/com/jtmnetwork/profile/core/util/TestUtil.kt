@@ -40,6 +40,10 @@ class TestUtil {
             return PermissionDTO(id, "perms")
         }
 
+        fun createPermissionDTO(id: String, permission: String): PermissionDTO {
+            return PermissionDTO(id, permission)
+        }
+
         fun assertProfile(returned: Profile, id: String) {
             assertThat(returned.id).isEqualTo(id)
             assertThat(returned.status).isEqualTo(AccountStatus.ONLINE)
