@@ -1,6 +1,7 @@
 package com.jtmnetwork.profile.core.util
 
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
+import com.jtmnetwork.profile.core.domain.dto.PermissionDTO
 import com.jtmnetwork.profile.core.domain.dto.SubDTO
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import org.assertj.core.api.Assertions.assertThat
@@ -33,6 +34,14 @@ class TestUtil {
 
         fun createSubDTO(): SubDTO {
             return SubDTO("plugin", 1, "30d")
+        }
+
+        fun createPermissionDTO(id: String): PermissionDTO {
+            return PermissionDTO(id, "perms")
+        }
+
+        fun createPermissionDTO(id: String, permission: String): PermissionDTO {
+            return PermissionDTO(id, permission)
         }
 
         fun assertProfile(returned: Profile, id: String) {
