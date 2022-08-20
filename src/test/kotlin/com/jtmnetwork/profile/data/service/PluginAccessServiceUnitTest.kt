@@ -3,6 +3,7 @@ package com.jtmnetwork.profile.data.service
 import com.jtmnetwork.profile.core.domain.exceptions.payment.FailedDeserialization
 import com.jtmnetwork.profile.core.domain.exceptions.payment.InvalidPaymentIntent
 import com.jtmnetwork.profile.core.domain.model.AccessDTO
+import com.jtmnetwork.profile.core.usecase.stripe.StripeEventConstructor
 import com.jtmnetwork.profile.core.usecase.stripe.StripeProcessor
 import com.jtmnetwork.profile.core.util.TestUtil
 import com.stripe.model.Event
@@ -23,21 +24,26 @@ class PluginAccessServiceUnitTest {
 
     private val permissionService: PermissionService = mock()
     private val processor: StripeProcessor<AccessDTO> = mock()
-    private val accessService = PluginAccessService(permissionService, processor)
+    private val constructor: StripeEventConstructor = mock()
+    private val accessService = PluginAccessService(permissionService, processor, constructor)
 
     private val event: Event = mock()
     private val id = UUID.randomUUID().toString()
     private val created = TestUtil.createProfile(id)
     private val accessDTO = AccessDTO("id")
 
+    private val headers = TestUtil.createStripeHeaders(id)
+    private val request = TestUtil.createRequest(headers)
+
     @Test
     fun addHook_shouldFailedDeserialization() {
+        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.error(FailedDeserialization()))
 
-        val returned = accessService.addHook(event)
+        val returned = accessService.addHook(request)
 
-        verify(processor, times(1)).process(anyOrNull())
-        verifyNoMoreInteractions(processor)
+        verify(constructor, times(1)).construct(anyOrNull())
+        verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
             .expectError(FailedDeserialization::class.java)
@@ -46,12 +52,13 @@ class PluginAccessServiceUnitTest {
 
     @Test
     fun addHook_shouldInvalidPayment() {
+        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.error(InvalidPaymentIntent()))
 
-        val returned = accessService.addHook(event)
+        val returned = accessService.addHook(request)
 
-        verify(processor, times(1)).process(anyOrNull())
-        verifyNoMoreInteractions(processor)
+        verify(constructor, times(1)).construct(anyOrNull())
+        verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
             .expectError(InvalidPaymentIntent::class.java)
@@ -60,13 +67,14 @@ class PluginAccessServiceUnitTest {
 
     @Test
     fun addHook_shouldReturnProfile() {
+        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.just(accessDTO))
         `when`(permissionService.addPermissions(anyString(), anyOrNull())).thenReturn(Mono.just(created))
 
-        val returned = accessService.addHook(event)
+        val returned = accessService.addHook(request)
 
-        verify(processor, times(1)).process(anyOrNull())
-        verifyNoMoreInteractions(processor)
+        verify(constructor, times(1)).construct(anyOrNull())
+        verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
             .assertNext {

@@ -5,6 +5,7 @@ import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.data.service.PluginAccessService
 import com.stripe.model.Event
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
@@ -13,7 +14,7 @@ import reactor.core.publisher.Mono
 class PluginAccessController @Autowired constructor(private val accessService: PluginAccessService) {
 
     @PostMapping("/hook")
-    fun postHook(@RequestBody event: Event): Mono<Profile> = accessService.addHook(event)
+    fun postHook(request: ServerHttpRequest, @RequestBody event: Event): Mono<Profile> = accessService.addHook(request)
 
     @PostMapping
     fun postAccess(@RequestBody dto: PermissionDTO): Mono<Profile> = accessService.addAccess(dto.id, dto.permission)
