@@ -24,6 +24,16 @@ class TestUtil {
             return headers
         }
 
+        fun createStripeHeaders(id: String): HttpHeaders {
+            val headers: HttpHeaders = mock()
+
+            `when`(headers.getFirst("CLIENT_ID")).thenReturn(id)
+            `when`(headers.getFirst("Stripe-Signature")).thenReturn("sig")
+            `when`(headers.getFirst("Stripe-Secret")).thenReturn("ev")
+
+            return headers
+        }
+
         fun createRequest(headers: HttpHeaders): ServerHttpRequest {
             val request: ServerHttpRequest = mock()
 
