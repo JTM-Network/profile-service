@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 class PluginAccessController @Autowired constructor(private val accessService: PluginAccessService) {
 
     @PostMapping("/hook")
-    fun postHook(request: ServerHttpRequest, @RequestBody event: Event): Mono<Profile> = accessService.addHook(request)
+    fun postHook(request: ServerHttpRequest): Mono<Profile> = accessService.addHook(request)
 
     @PostMapping
     fun postAccess(@RequestBody dto: PermissionDTO): Mono<Profile> = accessService.addAccess(dto.id, dto.permission)
