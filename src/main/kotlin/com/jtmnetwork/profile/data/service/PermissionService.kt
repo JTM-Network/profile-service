@@ -14,7 +14,9 @@ import reactor.core.publisher.Mono
 class PermissionService @Autowired constructor(private val profileRepository: ProfileRepository) {
 
     fun addPermissions(id: String, permissions: Array<String>): Mono<Profile> {
-        return Mono.empty()
+        return profileRepository.findById(id)
+            .switchIfEmpty(Mono.defer { Mono.error(ProfileNotFound()) })
+            .flatMap { profile -> profileRepository.save(profile.addPermission(permissions)) }
     }
 
     fun addPermission(dto: PermissionDTO): Mono<Profile> {
