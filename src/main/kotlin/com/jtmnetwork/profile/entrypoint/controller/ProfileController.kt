@@ -7,6 +7,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -20,6 +21,11 @@ class ProfileController @Autowired constructor(private val profileService: Profi
     @GetMapping("/{id}")
     fun getProfileById(@PathVariable id: String): Mono<Profile> {
         return profileService.getProfileById(id)
+    }
+
+    @GetMapping("/all")
+    fun getProfiles(): Flux<Profile> {
+        return profileService.getProfiles()
     }
 
     @GetMapping("/ban/{id}")

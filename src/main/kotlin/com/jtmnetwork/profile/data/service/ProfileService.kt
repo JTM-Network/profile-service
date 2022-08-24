@@ -42,6 +42,16 @@ class ProfileService @Autowired constructor(private val profileRepository: Profi
     }
 
     /**
+     * Fetches all the profiles.
+     *
+     * @see                             Profile
+     * @return                          Listed profiles
+     */
+    fun getProfiles(): Flux<Profile> {
+        return profileRepository.findAll()
+    }
+
+    /**
      * Bans the profile using the identifier. If profile is already banned throw
      * exception.
      *
