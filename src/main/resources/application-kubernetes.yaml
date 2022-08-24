@@ -6,3 +6,6 @@ spring:
 
 stripe:
   secret-key: ${STRIPE_SECRET_KEY}
+
+jwt:
+  secret-key: ${PLUGIN_SECRET_KEY}
