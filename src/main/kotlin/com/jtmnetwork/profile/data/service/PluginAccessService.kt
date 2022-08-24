@@ -17,8 +17,8 @@ class PluginAccessService @Autowired constructor(private val permissionService: 
 
     private val prefix = "PLUGIN_"
 
-    fun addHook(request: ServerHttpRequest): Mono<Profile> {
-        return constructor.construct(request)
+    fun addHook(request: ServerHttpRequest, body: String): Mono<Profile> {
+        return constructor.construct(request, body)
             .flatMap { event ->
                 processor.process(event)
                     .flatMap { dto ->

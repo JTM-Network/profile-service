@@ -38,7 +38,7 @@ class PluginAccessControllerUnitTest {
 
     @Test
     fun postHook_shouldReturnProfile() {
-        `when`(accessService.addHook(anyOrNull())).thenReturn(Mono.just(created))
+        `when`(accessService.addHook(anyOrNull(), anyString())).thenReturn(Mono.just(created))
 
         testClient.post()
             .uri("/plugin/access/hook")
@@ -49,7 +49,7 @@ class PluginAccessControllerUnitTest {
             .jsonPath("$.id").isEqualTo(id)
             .jsonPath("$.status").isEqualTo(AccountStatus.ONLINE.toString())
 
-        verify(accessService, times(1)).addHook(anyOrNull())
+        verify(accessService, times(1)).addHook(anyOrNull(), anyString())
         verifyNoMoreInteractions(accessService)
     }
 
