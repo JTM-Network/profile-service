@@ -40,7 +40,9 @@ dependencies {
 
     implementation "io.sentry:sentry-spring-boot-starter:6.3.0"
     implementation "io.springfox:springfox-boot-starter:3.0.0"
-    implementation 'com.stripe:stripe-java:20.136.0'
+    implementation 'com.stripe:stripe-java:21.2.0'
+    implementation 'com.devskiller.friendly-id:friendly-id:1.1.0'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
