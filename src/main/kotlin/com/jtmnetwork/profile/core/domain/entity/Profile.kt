@@ -32,7 +32,7 @@ data class Profile(@Id val id: String,
     }
 
     fun addPermission(permissions: Array<String>): Profile {
-        permissions.forEach { if (!permissions.contains(it)) this.permissions.add(it) }
+        permissions.forEach { if (!this.permissions.contains(it)) this.permissions.add(it) }
         this.updated()
         return this
     }

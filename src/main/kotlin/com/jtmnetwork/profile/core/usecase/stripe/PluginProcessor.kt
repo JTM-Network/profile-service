@@ -23,9 +23,7 @@ class PluginProcessor: StripeProcessor<AccessDTO> {
         val intent: PaymentIntent = stripeObject as PaymentIntent
         val accountId = intent.metadata["accountId"] ?: return Mono.error { InvalidPaymentIntent() }
         val plugins = intent.metadata["plugins"] ?: return Mono.error { InvalidPaymentIntent() }
-        logger.info("Plugins found: $plugins")
         val pluginIds = UtilString.stringToPlugins(plugins)
-        logger.info("Ids: $pluginIds")
         val dto = AccessDTO(accountId, pluginIds)
         return Mono.just(dto)
     }
