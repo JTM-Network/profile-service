@@ -107,9 +107,9 @@ class PermissionControllerUnitTest {
         testClient.get()
             .uri("/permission/auth?id=$id&permission=perms")
             .exchange()
-            .expectStatus().isNotFound
+            .expectStatus().isUnauthorized
             .expectBody()
-            .jsonPath("$.message").isEqualTo("Permission not found.")
+            .jsonPath("$.message").isEqualTo("You do not have permission.")
 
         verify(permissionService, times(1)).hasPermission(anyString(), anyString())
         verifyNoMoreInteractions(permissionService)
@@ -150,9 +150,9 @@ class PermissionControllerUnitTest {
         testClient.delete()
             .uri("/permission?id=$id&permission=perms")
             .exchange()
-            .expectStatus().isNotFound
+            .expectStatus().isUnauthorized
             .expectBody()
-            .jsonPath("$.message").isEqualTo("Permission not found.")
+            .jsonPath("$.message").isEqualTo("You do not have permission.")
 
         verify(permissionService, times(1)).removePermission(anyString(), anyString())
         verifyNoMoreInteractions(permissionService)
