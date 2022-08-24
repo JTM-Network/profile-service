@@ -109,7 +109,7 @@ class PermissionControllerUnitTest {
             .exchange()
             .expectStatus().isUnauthorized
             .expectBody()
-            .jsonPath("$.message").isEqualTo("Permission not found.")
+            .jsonPath("$.message").isEqualTo("You do not have permission.")
 
         verify(permissionService, times(1)).hasPermission(anyString(), anyString())
         verifyNoMoreInteractions(permissionService)
@@ -152,7 +152,7 @@ class PermissionControllerUnitTest {
             .exchange()
             .expectStatus().isUnauthorized
             .expectBody()
-            .jsonPath("$.message").isEqualTo("Permission not found.")
+            .jsonPath("$.message").isEqualTo("You do not have permission.")
 
         verify(permissionService, times(1)).removePermission(anyString(), anyString())
         verifyNoMoreInteractions(permissionService)
