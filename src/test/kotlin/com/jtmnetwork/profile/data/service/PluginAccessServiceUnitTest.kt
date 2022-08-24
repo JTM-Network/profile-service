@@ -37,12 +37,12 @@ class PluginAccessServiceUnitTest {
 
     @Test
     fun addHook_shouldFailedDeserialization() {
-        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
+        `when`(constructor.construct(anyOrNull(), anyString())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.error(FailedDeserialization()))
 
-        val returned = accessService.addHook(request)
+        val returned = accessService.addHook(request, "body")
 
-        verify(constructor, times(1)).construct(anyOrNull())
+        verify(constructor, times(1)).construct(anyOrNull(), anyString())
         verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
@@ -52,12 +52,12 @@ class PluginAccessServiceUnitTest {
 
     @Test
     fun addHook_shouldInvalidPayment() {
-        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
+        `when`(constructor.construct(anyOrNull(), anyString())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.error(InvalidPaymentIntent()))
 
-        val returned = accessService.addHook(request)
+        val returned = accessService.addHook(request, "body")
 
-        verify(constructor, times(1)).construct(anyOrNull())
+        verify(constructor, times(1)).construct(anyOrNull(), anyString())
         verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
@@ -67,13 +67,13 @@ class PluginAccessServiceUnitTest {
 
     @Test
     fun addHook_shouldReturnProfile() {
-        `when`(constructor.construct(anyOrNull())).thenReturn(Mono.just(event))
+        `when`(constructor.construct(anyOrNull(), anyString())).thenReturn(Mono.just(event))
         `when`(processor.process(anyOrNull())).thenReturn(Mono.just(accessDTO))
         `when`(permissionService.addPermissions(anyString(), anyOrNull())).thenReturn(Mono.just(created))
 
-        val returned = accessService.addHook(request)
+        val returned = accessService.addHook(request, "body")
 
-        verify(constructor, times(1)).construct(anyOrNull())
+        verify(constructor, times(1)).construct(anyOrNull(), anyString())
         verifyNoMoreInteractions(constructor)
 
         StepVerifier.create(returned)
