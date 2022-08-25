@@ -20,6 +20,7 @@ class TestUtil {
             val headers: HttpHeaders = mock()
 
             `when`(headers.getFirst("CLIENT_ID")).thenReturn(id)
+            `when`(headers.getFirst("PLUGIN_AUTHORIZATION")).thenReturn("Bearer token")
 
             return headers
         }
