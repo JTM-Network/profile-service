@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.times
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,15 +37,14 @@ class AuthControllerUnitTest {
 
     @Test
     fun authenticate() {
-        `when`(authService.authenticate(anyString(), anyString())).thenReturn(Mono.empty())
+        `when`(authService.authenticate(anyOrNull(), anyString())).thenReturn(Mono.empty())
 
-        testClient.post()
-            .uri("/auth")
-            .bodyValue(dto)
+        testClient.get()
+            .uri("/auth/id")
             .exchange()
             .expectStatus().isOk
 
-        verify(authService, times(1)).authenticate(anyString(), anyString())
+        verify(authService, times(1)).authenticate(anyOrNull(), anyString())
         verifyNoMoreInteractions(authService)
     }
 
@@ -53,7 +53,7 @@ class AuthControllerUnitTest {
         `when`(tokenService.getToken(anyString())).thenReturn(Mono.just("token"))
 
         testClient.get()
-            .uri("/auth/id")
+            .uri("/auth/token/id")
             .exchange()
             .expectStatus().isOk
 
