@@ -1,6 +1,7 @@
 package com.jtmnetwork.profile.entrypoint.controller
 
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
+import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
 import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
 import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
@@ -35,6 +36,7 @@ class ProfileControllerUnitTest {
 
     private val id = UUID.randomUUID().toString()
     private val created = TestUtil.createProfile(id)
+    private val dto = ProfileInfoDto("test", 1990, 5, 30)
 
     @Test
     fun getProfile_shouldThrowInvalidRequest() {
@@ -64,6 +66,23 @@ class ProfileControllerUnitTest {
             .jsonPath("$.status").isEqualTo(AccountStatus.ONLINE.toString())
 
         verify(profileService, times(1)).getProfile(anyOrNull())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun updateProfile_shouldThrowNotFound() {
+        `when`(profileService.updateProfile(anyOrNull(), anyOrNull())).thenReturn(Mono.just(created))
+
+        testClient.put()
+            .uri("/complete")
+            .bodyValue(dto)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isEqualTo(id)
+            .jsonPath("$.status").isEqualTo(AccountStatus.ONLINE.toString())
+
+        verify(profileService, times(1)).updateProfile(anyOrNull(), anyOrNull())
         verifyNoMoreInteractions(profileService)
     }
 

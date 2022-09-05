@@ -1,5 +1,6 @@
 package com.jtmnetwork.profile.data.service
 
+import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
 import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
@@ -27,6 +28,13 @@ class ProfileService @Autowired constructor(private val profileRepository: Profi
         val id = request.headers.getFirst("CLIENT_ID") ?: return Mono.error(InvalidRequestClientId())
         return profileRepository.findById(id)
             .switchIfEmpty(Mono.defer { profileRepository.save(Profile(id)) })
+    }
+
+    fun updateProfile(request: ServerHttpRequest, dto: ProfileInfoDto): Mono<Profile> {
+        val id = request.headers.getFirst("CLIENT_ID") ?: return Mono.error(InvalidRequestClientId())
+        return profileRepository.findById(id)
+            .switchIfEmpty(Mono.defer { Mono.error(ProfileNotFound()) })
+            .flatMap { profileRepository.save(it.updateProfile(dto)) }
     }
 
     /**
