@@ -1,4 +1,4 @@
-package com.jtmnetwork.profile.core.domain.exceptions
+package com.jtmnetwork.profile.core.domain.exceptions.profile
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

@@ -3,7 +3,7 @@ package com.jtmnetwork.profile.data.service
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
 import com.jtmnetwork.profile.core.domain.exceptions.PermissionFound
 import com.jtmnetwork.profile.core.domain.exceptions.PermissionNotFound
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
 import com.jtmnetwork.profile.core.util.TestUtil
 import com.mongodb.internal.connection.tlschannel.util.Util.assertTrue

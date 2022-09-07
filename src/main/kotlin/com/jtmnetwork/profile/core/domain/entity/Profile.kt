@@ -1,12 +1,15 @@
 package com.jtmnetwork.profile.core.domain.entity
 
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
+import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
+import com.jtmnetwork.profile.core.domain.model.ProfileInfo
 import com.jtmnetwork.profile.core.domain.model.Subscription
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("profiles")
 data class Profile(@Id val id: String,
+                   val info: ProfileInfo = ProfileInfo(),
                    val subs: MutableMap<String, Subscription> = HashMap(),
                    var status: AccountStatus,
                    val permissions: MutableList<String> = ArrayList(),
@@ -14,6 +17,12 @@ data class Profile(@Id val id: String,
                    val joined: Long = System.currentTimeMillis()) {
 
     constructor(id: String): this(id = id, status = AccountStatus.ONLINE)
+
+    fun updateProfile(dto: ProfileInfoDto): Profile {
+        this.info.updateUsername(dto.username)
+        this.info.updateDOB(dto.year, dto.month, dto.day)
+        return this
+    }
 
     fun addSubscription(name: String, level: Int, age: String): Profile {
         this.subs[name] = Subscription(level, age)

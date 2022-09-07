@@ -4,16 +4,22 @@ import com.jtmnetwork.profile.core.domain.constants.AccountStatus
 import com.jtmnetwork.profile.core.domain.dto.PermissionDTO
 import com.jtmnetwork.profile.core.domain.dto.SubDTO
 import com.jtmnetwork.profile.core.domain.entity.Profile
+import com.jtmnetwork.profile.core.domain.entity.Token
 import org.assertj.core.api.Assertions.assertThat
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.server.reactive.ServerHttpRequest
+import java.util.UUID
 
 class TestUtil {
     companion object {
         fun createProfile(id: String): Profile {
             return Profile(id)
+        }
+
+        fun createToken(accountId: UUID): Token {
+            return Token(accountId.toString(), "token")
         }
 
         fun createHeaders(id: String?): HttpHeaders {

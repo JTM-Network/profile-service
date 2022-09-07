@@ -1,7 +1,7 @@
 package com.jtmnetwork.profile.data.service
 
 import com.jtmnetwork.profile.core.domain.entity.Token
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
 import com.jtmnetwork.profile.core.domain.exceptions.token.TokenNotFound
 import com.jtmnetwork.profile.core.usecase.provider.TokenProvider
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
