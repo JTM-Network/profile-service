@@ -3,9 +3,10 @@ package com.jtmnetwork.profile.data.service
 import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileUnbanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileBanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileUnbanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.UsernameInUse
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -34,7 +35,15 @@ class ProfileService @Autowired constructor(private val profileRepository: Profi
         val id = request.headers.getFirst("CLIENT_ID") ?: return Mono.error(InvalidRequestClientId())
         return profileRepository.findById(id)
             .switchIfEmpty(Mono.defer { Mono.error(ProfileNotFound()) })
-            .flatMap { profileRepository.save(it.updateProfile(dto)) }
+            .flatMap { profile -> profileRepository.findByInfo_Username(dto.username)
+                .flatMap<Profile> { Mono.error(UsernameInUse()) }
+                .switchIfEmpty(Mono.defer { profileRepository.save(profile.updateProfile(dto)) })
+            }
+    }
+
+    fun validUsername(username: String): Mono<Void> {
+        return profileRepository.findByInfo_Username(username)
+            .flatMap { Mono.error(UsernameInUse()) }
     }
 
     /**

@@ -4,7 +4,7 @@ import com.jtmnetwork.profile.core.domain.dto.PermissionDTO
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.domain.exceptions.PermissionFound
 import com.jtmnetwork.profile.core.domain.exceptions.PermissionNotFound
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

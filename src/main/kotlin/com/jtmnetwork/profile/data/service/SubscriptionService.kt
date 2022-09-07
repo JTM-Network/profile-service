@@ -3,7 +3,7 @@ package com.jtmnetwork.profile.data.service
 import com.jtmnetwork.profile.core.domain.dto.SubDTO
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidAge
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
 import com.jtmnetwork.profile.core.domain.exceptions.SubscriptionFound
 import com.jtmnetwork.profile.core.domain.exceptions.SubscriptionNotFound
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository

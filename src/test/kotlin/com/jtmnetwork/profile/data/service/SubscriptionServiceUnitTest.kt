@@ -1,6 +1,6 @@
 package com.jtmnetwork.profile.data.service
 
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
 import com.jtmnetwork.profile.core.domain.exceptions.SubscriptionFound
 import com.jtmnetwork.profile.core.domain.exceptions.SubscriptionNotFound
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository

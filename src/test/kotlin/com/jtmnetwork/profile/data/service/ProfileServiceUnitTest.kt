@@ -2,9 +2,10 @@ package com.jtmnetwork.profile.data.service
 
 import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileUnbanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileBanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileUnbanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.UsernameInUse
 import com.jtmnetwork.profile.core.usecase.repository.ProfileRepository
 import com.jtmnetwork.profile.core.util.TestUtil
 import org.assertj.core.api.Assertions.assertThat
@@ -107,19 +108,69 @@ class ProfileServiceUnitTest {
     }
 
     @Test
-    fun updateProfile_shouldReturnProfile() {
+    fun updateProfile_shouldThrowUsernameInUse() {
         `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created))
-        `when`(profileRepository.save(anyOrNull())).thenReturn(Mono.just(created))
+        `when`(profileRepository.findByInfo_Username(anyString())).thenReturn(Mono.just(created))
 
         val returned = profileService.updateProfile(request, dto)
 
         verify(request, times(1)).headers
         verifyNoMoreInteractions(request)
 
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(UsernameInUse::class.java)
+            .verify()
+    }
+
+    @Test
+    fun updateProfile_shouldReturnProfile() {
+        `when`(profileRepository.findById(anyString())).thenReturn(Mono.just(created))
+        `when`(profileRepository.save(anyOrNull())).thenReturn(Mono.just(created))
+        `when`(profileRepository.findByInfo_Username(anyString())).thenReturn(Mono.empty())
+
+        val returned = profileService.updateProfile(request, dto)
+
+        verify(request, times(1)).headers
+        verifyNoMoreInteractions(request)
+
+        verify(profileRepository, times(1)).findById(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
         StepVerifier.create(returned)
             .assertNext {
                 assertThat(it.info.username).isEqualTo("test")
             }
+            .verifyComplete()
+    }
+
+    @Test
+    fun validUsername_shouldThrowFound() {
+        `when`(profileRepository.findByInfo_Username(anyString())).thenReturn(Mono.just(created))
+
+        val returned = profileService.validUsername("test")
+
+        verify(profileRepository, times(1)).findByInfo_Username(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(UsernameInUse::class.java)
+            .verify()
+    }
+
+    @Test
+    fun validUsername_shouldReturnEmpty_whenValid() {
+        `when`(profileRepository.findByInfo_Username(anyString())).thenReturn(Mono.empty())
+
+        val returned = profileService.validUsername("test")
+
+        verify(profileRepository, times(1)).findByInfo_Username(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectNextCount(0)
             .verifyComplete()
     }
 

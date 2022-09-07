@@ -1,5 +1,6 @@
 package com.jtmnetwork.profile.core.usecase.repository
 
+import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.util.TestUtil
 import junit.framework.TestCase.assertNotNull
@@ -39,6 +40,26 @@ class ProfileRepositoryIntegrationTest {
         if (returned != null) {
             assertThat(returned.id).isEqualTo(id.toString())
         }
+    }
+
+    @Test
+    fun findByInfoUsername_shouldReturnProfile() {
+        profileRepository.save(created.updateProfile(ProfileInfoDto("test", 1980, 5, 21))).block()
+
+        val returned = profileRepository.findByInfo_Username("test")
+
+        StepVerifier.create(returned)
+            .assertNext { assertThat(it.id).isEqualTo(created.id) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun findByInfoUsername_shouldReturnEmpty() {
+        val returned = profileRepository.findByInfo_Username("test")
+
+        StepVerifier.create(returned)
+            .expectNextCount(0)
+            .verifyComplete()
     }
 
     @Test

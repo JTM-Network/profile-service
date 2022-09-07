@@ -3,9 +3,9 @@ package com.jtmnetwork.profile.entrypoint.controller
 import com.jtmnetwork.profile.core.domain.constants.AccountStatus
 import com.jtmnetwork.profile.core.domain.dto.ProfileInfoDto
 import com.jtmnetwork.profile.core.domain.exceptions.InvalidRequestClientId
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileBanned
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileNotFound
-import com.jtmnetwork.profile.core.domain.exceptions.ProfileUnbanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileBanned
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileNotFound
+import com.jtmnetwork.profile.core.domain.exceptions.profile.ProfileUnbanned
 import com.jtmnetwork.profile.core.util.TestUtil
 import com.jtmnetwork.profile.data.service.ProfileService
 import org.junit.Test
@@ -70,7 +70,7 @@ class ProfileControllerUnitTest {
     }
 
     @Test
-    fun updateProfile_shouldThrowNotFound() {
+    fun updateProfile() {
         `when`(profileService.updateProfile(anyOrNull(), anyOrNull())).thenReturn(Mono.just(created))
 
         testClient.put()
@@ -83,6 +83,19 @@ class ProfileControllerUnitTest {
             .jsonPath("$.status").isEqualTo(AccountStatus.ONLINE.toString())
 
         verify(profileService, times(1)).updateProfile(anyOrNull(), anyOrNull())
+        verifyNoMoreInteractions(profileService)
+    }
+
+    @Test
+    fun validUsername() {
+        `when`(profileService.validUsername(anyString())).thenReturn(Mono.empty())
+
+        testClient.get()
+            .uri("/valid?username=test")
+            .exchange()
+            .expectStatus().isOk
+
+        verify(profileService, times(1)).validUsername(anyString())
         verifyNoMoreInteractions(profileService)
     }
 
