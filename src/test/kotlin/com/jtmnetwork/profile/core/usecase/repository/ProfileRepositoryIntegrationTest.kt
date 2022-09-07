@@ -5,6 +5,7 @@ import com.jtmnetwork.profile.core.domain.entity.Profile
 import com.jtmnetwork.profile.core.util.TestUtil
 import junit.framework.TestCase.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -26,7 +27,7 @@ class ProfileRepositoryIntegrationTest {
     private val id = UUID.randomUUID()
     private val created = TestUtil.createProfile(id.toString())
 
-    @BeforeEach
+    @Before
     fun setup() {
         profileRepository.deleteAll().block()
     }
