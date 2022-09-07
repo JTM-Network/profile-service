@@ -43,7 +43,8 @@ class ProfileService @Autowired constructor(private val profileRepository: Profi
 
     fun validUsername(username: String): Mono<Void> {
         return profileRepository.findByInfo_Username(username)
-            .flatMap { Mono.error(UsernameInUse()) }
+            .flatMap<Void?> { Mono.error(UsernameInUse()) }
+            .switchIfEmpty(Mono.empty())
     }
 
     /**
