@@ -19,8 +19,8 @@ class PluginAccessController @Autowired constructor(private val accessService: P
     @PostMapping
     fun postAccess(@RequestBody dto: PermissionDTO): Mono<Profile> = accessService.addAccess(dto.id, dto.permission)
 
-    @GetMapping("/auth")
-    fun getAccess(@RequestParam("id") id: String, @RequestParam("permission") permission: String): Mono<Void> = accessService.hasAccess(id, permission)
+    @PostMapping("/auth")
+    fun getAccess(@RequestBody dto: PermissionDTO): Mono<Void> = accessService.hasAccess(dto.id, dto.permission)
 
     @DeleteMapping
     fun deleteAccess(@RequestParam("id") id: String, @RequestParam("permission") permission: String): Mono<Profile> = accessService.removeAccess(id, permission)

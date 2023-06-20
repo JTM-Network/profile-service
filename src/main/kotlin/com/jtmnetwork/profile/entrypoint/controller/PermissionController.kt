@@ -21,8 +21,8 @@ class PermissionController @Autowired constructor(private val permissionService:
     @PostMapping
     fun postPermission(@RequestBody dto: PermissionDTO): Mono<Profile> = permissionService.addPermission(dto)
 
-    @GetMapping("/auth")
-    fun hasPermission(@RequestParam("id") id: String, @RequestParam("permission") permission: String): Mono<Void> = permissionService.hasPermission(id, permission)
+    @PostMapping("/auth")
+    fun hasPermission(@RequestBody dto: PermissionDTO): Mono<Void> = permissionService.hasPermission(dto.id, dto.permission)
 
     @DeleteMapping
     fun deletePermission(@RequestParam("id") id: String, @RequestParam("permission") permission: String): Mono<Profile> = permissionService.removePermission(id, permission)
